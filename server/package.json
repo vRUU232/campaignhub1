@@ -1,0 +1,44 @@
+{
+  "name": "campaignhub-api",
+  "version": "1.0.0",
+  "description": "CampaignHub - Marketing Campaign Management System API. A full-stack application for managing contacts, creating marketing campaigns, and tracking campaign-contact assignments.",
+  "main": "index.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "db:init": "node config/initDb.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "marketing",
+    "campaign",
+    "crm",
+    "contacts",
+    "nodejs",
+    "express",
+    "postgresql",
+    "rest-api"
+  ],
+  "author": "Vruti Mistry",
+  "license": "ISC",
+  "type": "commonjs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/campaignhub"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.1",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
