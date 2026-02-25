@@ -28,6 +28,6 @@ router.post(
 );
 
 // GET /api/auth/me (Protected)
-router.get('/me', auth, authController.getMe);
+router.get('/me', auth,authController.getMe);
 
 module.exports = router;

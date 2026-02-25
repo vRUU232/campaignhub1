@@ -9,9 +9,9 @@ const router = express.Router();
 router.use(auth);
 
 // GET /api/campaigns
-router.get('/', campaignController.getAll);
+router.get('/',campaignController.getAll);
 
-// GET /api/campaigns/:id
+// GET /api/campaigns/:id 
 router.get('/:id', campaignController.getById);
 
 // POST /api/campaigns

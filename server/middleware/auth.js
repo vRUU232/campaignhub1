@@ -1,3 +1,8 @@
+/**
+ * JWT Authentication Middleware
+ * Protects routes by validating Bearer token
+ */
+
 const jwt = require('jsonwebtoken');
 
 const auth = (req, res, next) => {
@@ -12,6 +17,7 @@ const auth = (req, res, next) => {
       return res.status(401).json({ error: 'No token, authorization denied' });
     }
 
+    // Verify token and attach user to request
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
