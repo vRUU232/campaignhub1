@@ -1,0 +1,442 @@
+{
+	"info": {
+		"_postman_id": "campaignhub-api-collection",
+		"name": "CampaignHub API",
+		"description": "Complete API collection for CampaignHub - A campaign management system with authentication, contacts, and campaigns management.\n\n## Authentication\nMost endpoints require JWT Bearer token authentication. Use the Login or Register endpoint first to get a token, then set it in the collection variable `authToken`.\n\n## Base URL\nDefault: `http://localhost:5001/api`",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5001/api",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["health"]
+						},
+						"description": "Check if the API server is running and healthy."
+					},
+					"response": []
+				}
+			],
+			"description": "Health check endpoints for monitoring API status."
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('authToken', jsonData.token);",
+									"    console.log('Token saved to collection variable');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "register"]
+						},
+						"description": "Register a new user account.\n\n**Validation Rules:**\n- `email`: Required, must be valid email format\n- `password`: Required, minimum 6 characters\n- `firstName`: Required, non-empty\n- `lastName`: Required, non-empty\n\n**Note:** The JWT token is automatically saved to the `authToken` collection variable on successful registration."
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('authToken', jsonData.token);",
+									"    console.log('Token saved to collection variable');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login with existing user credentials.\n\n**Validation Rules:**\n- `email`: Required, must be valid email format\n- `password`: Required, non-empty\n\n**Note:** The JWT token is automatically saved to the `authToken` collection variable on successful login."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "me"]
+						},
+						"description": "Get the currently authenticated user's profile information.\n\n**Authentication:** Required (JWT Bearer token)"
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints for user registration, login, and profile management."
+		},
+		{
+			"name": "Contacts",
+			"item": [
+				{
+					"name": "Get All Contacts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/contacts",
+							"host": ["{{baseUrl}}"],
+							"path": ["contacts"]
+						},
+						"description": "Retrieve all contacts for the authenticated user.\n\n**Authentication:** Required (JWT Bearer token)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Contact",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/contacts/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["contacts", "1"]
+						},
+						"description": "Retrieve a specific contact by ID.\n\n**Authentication:** Required (JWT Bearer token)\n\n**Path Parameters:**\n- `id`: Contact ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Contact",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Jane\",\n    \"lastName\": \"Smith\",\n    \"email\": \"jane@example.com\",\n    \"phone\": \"+1-555-0100\",\n    \"company\": \"Acme Corp\",\n    \"notes\": \"VIP client\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/contacts",
+							"host": ["{{baseUrl}}"],
+							"path": ["contacts"]
+						},
+						"description": "Create a new contact.\n\n**Authentication:** Required (JWT Bearer token)\n\n**Validation Rules:**\n- `firstName`: Required, non-empty\n- `lastName`: Required, non-empty\n- `email`: Required, valid email format\n- `phone`: Optional\n- `company`: Optional\n- `notes`: Optional"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Contact",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Jane\",\n    \"lastName\": \"Smith-Updated\",\n    \"email\": \"jane.updated@example.com\",\n    \"phone\": \"+1-555-0101\",\n    \"company\": \"Acme Corp Inc\",\n    \"notes\": \"Updated VIP client notes\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/contacts/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["contacts", "1"]
+						},
+						"description": "Update an existing contact.\n\n**Authentication:** Required (JWT Bearer token)\n\n**Path Parameters:**\n- `id`: Contact ID\n\n**Note:** All fields are optional - only include fields you want to update."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Contact",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/contacts/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["contacts", "1"]
+						},
+						"description": "Delete a contact by ID.\n\n**Authentication:** Required (JWT Bearer token)\n\n**Path Parameters:**\n- `id`: Contact ID"
+					},
+					"response": []
+				}
+			],
+			"description": "Contact management endpoints for CRUD operations on contacts."
+		},
+		{
+			"name": "Campaigns",
+			"item": [
+				{
+					"name": "Get All Campaigns",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/campaigns",
+							"host": ["{{baseUrl}}"],
+							"path": ["campaigns"]
+						},
+						"description": "Retrieve all campaigns for the authenticated user.\n\n**Authentication:** Required (JWT Bearer token)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Campaign",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/campaigns/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["campaigns", "1"]
+						},
+						"description": "Retrieve a specific campaign by ID, including assigned contacts.\n\n**Authentication:** Required (JWT Bearer token)\n\n**Path Parameters:**\n- `id`: Campaign ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Campaign",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Spring Sale 2026\",\n    \"subject\": \"Don't miss our spring sale!\",\n    \"message\": \"Get up to 50% off on selected items. Limited time offer!\",\n    \"status\": \"draft\",\n    \"scheduledAt\": \"2026-02-15T10:00:00Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/campaigns",
+							"host": ["{{baseUrl}}"],
+							"path": ["campaigns"]
+						},
+						"description": "Create a new campaign.\n\n**Authentication:** Required (JWT Bearer token)\n\n**Validation Rules:**\n- `name`: Required, non-empty\n- `subject`: Required, non-empty\n- `message`: Required, non-empty\n- `status`: Optional (defaults to 'draft')\n- `scheduledAt`: Optional (ISO 8601 format)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Campaign",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Spring Sale 2026 - Updated\",\n    \"subject\": \"Updated: Don't miss our spring sale!\",\n    \"message\": \"Updated message content here.\",\n    \"status\": \"sent\",\n    \"scheduledAt\": \"2026-02-20T10:00:00Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/campaigns/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["campaigns", "1"]
+						},
+						"description": "Update an existing campaign.\n\n**Authentication:** Required (JWT Bearer token)\n\n**Path Parameters:**\n- `id`: Campaign ID\n\n**Note:** All fields are optional. When `status` is set to 'sent', the `sentAt` timestamp is automatically set."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Campaign",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/campaigns/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["campaigns", "1"]
+						},
+						"description": "Delete a campaign by ID.\n\n**Authentication:** Required (JWT Bearer token)\n\n**Path Parameters:**\n- `id`: Campaign ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Campaign Contacts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/campaigns/1/contacts",
+							"host": ["{{baseUrl}}"],
+							"path": ["campaigns", "1", "contacts"]
+						},
+						"description": "Get all contacts assigned to a specific campaign.\n\n**Authentication:** Required (JWT Bearer token)\n\n**Path Parameters:**\n- `id`: Campaign ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Contacts to Campaign",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"contactIds\": [1, 2, 3]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/campaigns/1/contacts",
+							"host": ["{{baseUrl}}"],
+							"path": ["campaigns", "1", "contacts"]
+						},
+						"description": "Add multiple contacts to a campaign.\n\n**Authentication:** Required (JWT Bearer token)\n\n**Path Parameters:**\n- `id`: Campaign ID\n\n**Validation Rules:**\n- `contactIds`: Required, must be non-empty array of contact IDs\n\n**Note:** Duplicate contact assignments are ignored."
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Contact from Campaign",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/campaigns/1/contacts/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["campaigns", "1", "contacts", "1"]
+						},
+						"description": "Remove a specific contact from a campaign.\n\n**Authentication:** Required (JWT Bearer token)\n\n**Path Parameters:**\n- `id`: Campaign ID\n- `contactId`: Contact ID to remove"
+					},
+					"response": []
+				}
+			],
+			"description": "Campaign management endpoints for CRUD operations on campaigns and managing campaign-contact relationships."
+		}
+	]
+}
