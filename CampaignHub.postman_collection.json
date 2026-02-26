@@ -2,13 +2,13 @@
 	"info": {
 		"_postman_id": "campaignhub-api-collection",
 		"name": "CampaignHub API",
-		"description": "Complete API collection for CampaignHub - A campaign management system with authentication, contacts, and campaigns management.\n\n## Authentication\nMost endpoints require JWT Bearer token authentication. Use the Login or Register endpoint first to get a token, then set it in the collection variable `authToken`.\n\n## Base URL\nDefault: `http://localhost:5001/api`",
+		"description": "Complete API collection for CampaignHub - A campaign management system with authentication, contacts, and campaigns management.\n\n## Authentication\nMost endpoints require JWT Bearer token authentication. Use the Login or Register endpoint first to get a token, then set it in the collection variable `authToken`.\n\n## Base URL\nLive: `https://campaignhub1.onrender.com/api`",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "http://localhost:5001/api",
+			"value": "https://campaignhub1.onrender.com/api",
 			"type": "string"
 		},
 		{
