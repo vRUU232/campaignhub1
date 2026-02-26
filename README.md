@@ -44,12 +44,8 @@ npm install
 2. Create `.env` file:
 ```
 PORT=5001
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=your_username
-DB_PASSWORD=your_password
-DB_NAME=campaignhub
-JWT_SECRET=your_secret_key
+DATABASE_URL=postgresql:url
+JWT_SECRET=secret_key
 ```
 
 3. Initialize database:
