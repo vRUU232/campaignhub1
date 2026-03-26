@@ -21,18 +21,28 @@ const settingsController = {
         });
       }
 
-      // Return safe response (masked credentials)
+      // Return safe response (masked credentials) with both camelCase and snake_case
+      const maskedSid = settings.accountSid ? `${settings.accountSid.substring(0, 8)}...` : null;
       res.json({
         configured: true,
         settings: {
           id: settings.id,
-          accountSid: settings.accountSid ? `${settings.accountSid.substring(0, 8)}...` : null,
+          // camelCase
+          accountSid: maskedSid,
           phoneNumber: settings.phoneNumber,
           messagingServiceSid: settings.messagingServiceSid,
           isVerified: settings.isVerified,
           monthlyLimit: settings.monthlyLimit,
           createdAt: settings.createdAt,
-          updatedAt: settings.updatedAt
+          updatedAt: settings.updatedAt,
+          // snake_case aliases for frontend compatibility
+          account_sid: maskedSid,
+          phone_number: settings.phoneNumber,
+          messaging_service_sid: settings.messagingServiceSid,
+          is_verified: settings.isVerified,
+          monthly_limit: settings.monthlyLimit,
+          created_at: settings.createdAt,
+          updated_at: settings.updatedAt
         }
       });
     } catch (error) {
@@ -46,7 +56,11 @@ const settingsController = {
    */
   async saveTwilioSettings(req, res) {
     try {
-      const { accountSid, authToken, phoneNumber, messagingServiceSid } = req.body;
+      // Support both camelCase and snake_case field names
+      const accountSid = req.body.accountSid || req.body.account_sid;
+      const authToken = req.body.authToken || req.body.auth_token;
+      const phoneNumber = req.body.phoneNumber || req.body.phone_number;
+      const messagingServiceSid = req.body.messagingServiceSid || req.body.messaging_service_sid;
 
       // Validate required fields
       if (!accountSid || !authToken || !phoneNumber) {

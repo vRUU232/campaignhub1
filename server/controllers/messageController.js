@@ -119,7 +119,10 @@ const messageController = {
    */
   async send(req, res) {
     try {
-      const { contactId, phone, message } = req.body;
+      // Support both naming conventions (camelCase and snake_case)
+      const contactId = req.body.contactId || req.body.contact_id;
+      const phone = req.body.phone || req.body.to_number;
+      const message = req.body.message || req.body.body;
 
       if (!message) {
         return res.status(400).json({ error: 'Message content is required' });

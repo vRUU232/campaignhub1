@@ -14,6 +14,7 @@ router.use(auth);
 // Twilio settings
 router.get('/twilio', settingsController.getTwilioSettings);
 router.post('/twilio', settingsController.saveTwilioSettings);
+router.put('/twilio', settingsController.saveTwilioSettings); // Support both POST and PUT
 router.delete('/twilio', settingsController.deleteTwilioSettings);
 router.post('/twilio/test', settingsController.testTwilioConnection);
 router.get('/twilio/numbers', settingsController.getAvailableNumbers);

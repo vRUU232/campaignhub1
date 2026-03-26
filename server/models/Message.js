@@ -114,9 +114,11 @@ const Message = {
            WHERE user_id = $1 AND contact_id = $2 AND direction = 'inbound' AND read_at IS NULL`,
           [userId, conv.contact_id]
         );
+        const unreadCount = parseInt(unreadResult.rows[0].unread_count);
         return {
           ...this.formatConversation(conv),
-          unreadCount: parseInt(unreadResult.rows[0].unread_count)
+          unreadCount: unreadCount,
+          unread_count: unreadCount // snake_case for frontend compatibility
         };
       })
     );
@@ -206,6 +208,7 @@ const Message = {
       body: message.content, // Alias for frontend compatibility
       twilioSid: message.twilio_sid,
       twilioStatus: message.twilio_status,
+      status: message.twilio_status, // Alias for frontend compatibility
       errorCode: message.error_code,
       errorMessage: message.error_message,
       segments: message.segments,
@@ -225,13 +228,20 @@ const Message = {
 
   formatConversation(conv) {
     return {
+      // Include both camelCase and snake_case for frontend compatibility
       contactId: conv.contact_id,
+      contact_id: conv.contact_id,
       name: conv.name,
+      contact_name: conv.name,
       phone: conv.phone,
       lastMessage: conv.last_message,
+      last_message: conv.last_message,
       lastDirection: conv.last_direction,
+      last_direction: conv.last_direction,
       lastMessageAt: conv.last_message_at,
-      lastStatus: conv.twilio_status
+      last_message_at: conv.last_message_at,
+      lastStatus: conv.twilio_status,
+      twilio_status: conv.twilio_status
     };
   }
 };

@@ -377,27 +377,27 @@ export default function LandingPage() {
         <section id="contact" className="pb-8 pt-4 lg:pb-16">
           <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="rounded-[2.3rem] border border-[rgba(31,23,47,0.08)] bg-[linear-gradient(145deg,rgba(242,219,196,0.92),rgba(255,255,255,0.9))] p-6 shadow-[0_24px_70px_rgba(31,23,47,0.08)] sm:p-8 lg:p-10">
-              <SectionPill>Next step</SectionPill>
+              <SectionPill>Get started</SectionPill>
               <h2 className="mt-5 max-w-[32rem] font-['Outfit'] text-[2.6rem] font-semibold leading-[1] tracking-[-0.05em] text-[var(--ink)] sm:text-[3.5rem]">
-                Ready to turn this concept into a complete product experience?
+                Bring campaigns, contacts, and customer replies into one clear workspace.
               </h2>
               <p className="mt-6 max-w-[34rem] text-lg leading-8 text-[var(--muted)]">
-                The landing page now has a clear structure and stronger positioning. Next we can extend the same system into auth, dashboard, campaigns, contacts, analytics, and inbox workflows.
+                CampaignHub gives teams a simpler way to launch SMS campaigns, manage audiences, and handle replies with shared visibility across the workflow.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4">
-                <a
-                  href="#product"
+                <Link
+                  to="/login"
                   className="inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5"
                 >
-                  Review product overview
+                  Start with CampaignHub
                   <ArrowRight className="h-4 w-4" />
-                </a>
+                </Link>
                 <a
                   href="#workflow"
                   className="inline-flex items-center gap-2 rounded-full border border-[rgba(31,23,47,0.12)] bg-white/80 px-6 py-3 text-sm font-semibold text-[var(--ink)] transition hover:-translate-y-0.5"
                 >
-                  Review workflow
+                  Explore workflow
                   <Command className="h-4 w-4" />
                 </a>
               </div>
@@ -427,9 +427,9 @@ export default function LandingPage() {
         <footer className="flex flex-col gap-4 px-2 pt-6 text-sm text-[var(--muted)] lg:flex-row lg:items-center lg:justify-between lg:px-4">
           <div className="flex items-center gap-3">
             <BrandMark compact />
-            <p>CampaignHub landing page concept built in React + Tailwind.</p>
+            <p>CampaignHub for modern SMS campaign and inbox operations.</p>
           </div>
-          <p>Refined for a cleaner, more standard SMS product narrative.</p>
+          <p>Built to support campaigns, contacts, analytics, and shared reply workflows.</p>
         </footer>
       </main>
     </div>
