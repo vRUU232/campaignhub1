@@ -1,7 +1,7 @@
 {
   "name": "campaignhub-api",
-  "version": "1.0.0",
-  "description": "CampaignHub - Marketing Campaign Management System API. A full-stack application for managing contacts, creating marketing campaigns, and tracking campaign-contact assignments.",
+  "version": "2.0.0",
+  "description": "CampaignHub - SMS Marketing Campaign Management Platform. Full-stack application for managing contacts, creating SMS campaigns with Twilio integration, and tracking message delivery.",
   "main": "index.js",
   "engines": {
     "node": ">=18.0.0"
@@ -10,11 +10,14 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "db:init": "node config/initDb.js",
+    "db:reset": "node config/initDb.js --reset",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
+    "sms",
     "marketing",
     "campaign",
+    "twilio",
     "crm",
     "contacts",
     "nodejs",
@@ -36,7 +39,8 @@
     "express": "^5.2.1",
     "express-validator": "^7.3.1",
     "jsonwebtoken": "^9.0.3",
-    "pg": "^8.18.0"
+    "pg": "^8.18.0",
+    "twilio": "^5.13.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"

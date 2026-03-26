@@ -11,8 +11,7 @@ router.post(
   [
     body('email').isEmail().withMessage('Please enter a valid email'),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-    body('firstName').notEmpty().withMessage('First name is required'),
-    body('lastName').notEmpty().withMessage('Last name is required')
+    body('name').notEmpty().withMessage('Name is required')
   ],
   authController.register
 );
@@ -27,7 +26,10 @@ router.post(
   authController.login
 );
 
-// GET /api/auth/me (Protected)
-router.get('/me', auth,authController.getMe);
+// GET /api/auth/profile (Protected)
+router.get('/profile', auth, authController.getProfile);
+
+// PUT /api/auth/profile (Protected)
+router.put('/profile', auth, authController.updateProfile);
 
 module.exports = router;

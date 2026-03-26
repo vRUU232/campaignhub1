@@ -1,34 +1,45 @@
+/**
+ * Contact Routes
+ * Handles contact management endpoints
+ */
+
 const express = require('express');
+const router = express.Router();
 const { body } = require('express-validator');
 const contactController = require('../controllers/contactController');
 const auth = require('../middleware/auth');
 
-const router = express.Router();
-
 // All routes require authentication
 router.use(auth);
 
-// GET /api/contacts
+// Get active contacts (for campaign assignment) - must be before /:id
+router.get('/active', contactController.getActive);
+
+// Get all contacts
 router.get('/', contactController.getAll);
 
-// GET /api/contacts/:id
+// Get a single contact
 router.get('/:id', contactController.getById);
 
-// POST /api/contacts
-router.post(
-  '/',
+// Create a new contact
+router.post('/',
   [
-    body('firstName').notEmpty().withMessage('First name is required'),
-    body('lastName').notEmpty().withMessage('Last name is required'),
-    body('email').isEmail().withMessage('Please enter a valid email')
+    body('name').notEmpty().withMessage('Name is required'),
+    body('phone').notEmpty().withMessage('Phone number is required')
   ],
   contactController.create
 );
 
-// PUT /api/contacts/:id
+// Bulk create contacts
+router.post('/bulk', contactController.bulkCreate);
+
+// Bulk delete contacts
+router.delete('/bulk', contactController.bulkDelete);
+
+// Update a contact
 router.put('/:id', contactController.update);
 
-// DELETE /api/contacts/:id
+// Delete a contact
 router.delete('/:id', contactController.delete);
 
 module.exports = router;

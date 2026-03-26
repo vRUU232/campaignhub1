@@ -1,43 +1,57 @@
+/**
+ * Campaign Routes
+ * Handles SMS campaign endpoints
+ */
+
 const express = require('express');
+const router = express.Router();
 const { body } = require('express-validator');
 const campaignController = require('../controllers/campaignController');
 const auth = require('../middleware/auth');
 
-const router = express.Router();
-
 // All routes require authentication
 router.use(auth);
 
-// GET /api/campaigns
-router.get('/',campaignController.getAll);
+// Get all campaigns
+router.get('/', campaignController.getAll);
 
-// GET /api/campaigns/:id 
+// Get a single campaign
 router.get('/:id', campaignController.getById);
 
-// POST /api/campaigns
-router.post(
-  '/',
+// Create a new campaign
+router.post('/',
   [
     body('name').notEmpty().withMessage('Campaign name is required'),
-    body('subject').notEmpty().withMessage('Subject is required'),
-    body('message').notEmpty().withMessage('Message is required')
+    body('message').notEmpty().withMessage('Message content is required')
   ],
   campaignController.create
 );
 
-// PUT /api/campaigns/:id
+// Update a campaign
 router.put('/:id', campaignController.update);
 
-// DELETE /api/campaigns/:id
+// Delete a campaign
 router.delete('/:id', campaignController.delete);
 
-// GET /api/campaigns/:id/contacts
+// Get campaign contacts
 router.get('/:id/contacts', campaignController.getContacts);
 
-// POST /api/campaigns/:id/contacts
+// Add contacts to campaign
 router.post('/:id/contacts', campaignController.addContacts);
 
-// DELETE /api/campaigns/:id/contacts/:contactId
+// Remove contact from campaign
 router.delete('/:id/contacts/:contactId', campaignController.removeContact);
+
+// Send campaign
+router.post('/:id/send', campaignController.send);
+
+// Schedule campaign
+router.post('/:id/schedule', campaignController.schedule);
+
+// Cancel scheduled campaign
+router.post('/:id/cancel', campaignController.cancel);
+
+// Duplicate campaign
+router.post('/:id/duplicate', campaignController.duplicate);
 
 module.exports = router;
