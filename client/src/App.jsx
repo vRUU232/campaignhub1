@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 
@@ -18,6 +18,7 @@ import Inbox from './pages/Inbox';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
 import Groups from './pages/Groups';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -96,8 +97,8 @@ function App() {
             <Route path="/settings" element={<Settings />} />
           </Route>
 
-          {/* Fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          {/* 404 - catch-all route for unmatched URLs */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

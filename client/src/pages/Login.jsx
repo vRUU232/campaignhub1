@@ -1,3 +1,4 @@
+// Login page — authenticates existing users via JWT
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Zap, ArrowRight } from 'lucide-react';
@@ -7,12 +8,14 @@ import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 
 export default function Login() {
+  // Form state and auth context
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  // Submit credentials to the backend auth API
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);

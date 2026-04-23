@@ -1,3 +1,4 @@
+// Contacts page — full CRUD for managing SMS recipients with search, filtering, and bulk actions
 import { useEffect, useState } from 'react';
 import {
   Plus,
@@ -53,6 +54,7 @@ export default function Contacts() {
     fetchData();
   }, [pagination.page, search, statusFilter]);
 
+  // Fetch contacts and groups in parallel with current filter/search params
   const fetchData = async () => {
     try {
       const params = {
@@ -278,7 +280,16 @@ export default function Contacts() {
             </CardDescription>
           </div>
           {selectedContacts.length > 0 ? (
-            <Button variant="danger" size="sm" onClick={handleBulkDelete} icon={Trash2}>
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={() => {
+                if (window.confirm(`Are you sure you want to delete ${selectedContacts.length} contacts? This action cannot be undone.`)) {
+                  handleBulkDelete();
+                }
+              }}
+              icon={Trash2}
+            >
               Delete {selectedContacts.length}
             </Button>
           ) : (

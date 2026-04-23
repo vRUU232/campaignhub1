@@ -107,6 +107,7 @@ export const analyticsAPI = {
   getCampaignStats: (params) => api.get('/analytics/campaigns', { params }),
   getMessageStats: (params) => api.get('/analytics/messages', { params }),
   getDaily: (params) => api.get('/analytics/daily', { params }),
+  getHourly: () => api.get('/analytics/hourly'),
 };
 
 // Settings API

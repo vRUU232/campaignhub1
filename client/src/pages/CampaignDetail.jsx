@@ -117,7 +117,18 @@ export default function CampaignDetail() {
     );
   }
 
-  if (!campaign) return null;
+  // Show error state if campaign could not be loaded
+  if (!campaign) {
+    return (
+      <div className="flex h-96 flex-col items-center justify-center text-center">
+        <p className="text-lg font-medium text-[#1f172f]">Campaign not found</p>
+        <p className="mt-1 text-sm text-[#6f677b]">This campaign may have been deleted or is unavailable.</p>
+        <Link to="/campaigns" className="mt-4">
+          <Button variant="outline" icon={ArrowLeft}>Back to Campaigns</Button>
+        </Link>
+      </div>
+    );
+  }
 
   const pieData = [
     { name: 'Delivered', value: campaign.delivered_count || 0, color: '#7aa998' },

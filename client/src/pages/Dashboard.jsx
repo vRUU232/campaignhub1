@@ -1,3 +1,4 @@
+// Dashboard page — displays KPI stats, message charts, and recent activity
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -45,6 +46,7 @@ export default function Dashboard() {
     fetchDashboardData();
   }, []);
 
+  // Fetch analytics, campaigns, and messages in parallel for performance
   const fetchDashboardData = async () => {
     try {
       const [statsRes, campaignsRes, messagesRes] = await Promise.all([
@@ -56,13 +58,14 @@ export default function Dashboard() {
       setStats(statsRes.data);
       setRecentCampaigns(campaignsRes.data.campaigns || []);
       setRecentMessages(messagesRes.data.messages || []);
-    } catch (error) {
-      console.error('Failed to fetch dashboard data:', error);
+    } catch {
+      // Dashboard data fetch failed — show default empty state
     } finally {
       setLoading(false);
     }
   };
 
+  // Transform API data into chart-friendly formats
   const chartData = stats?.daily_stats?.map((d) => ({
     date: format(new Date(d.date), 'MMM d'),
     sent: d.sent || 0,

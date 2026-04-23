@@ -1,10 +1,9 @@
+// Settings page — manages profile, Twilio integration, and password changes
 import { useState, useEffect } from 'react';
 import {
   User,
   Phone,
-  Key,
   Shield,
-  Bell,
   CheckCircle,
   AlertCircle,
   Eye,
@@ -18,6 +17,7 @@ import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/Card';
 
+// Tab configuration for the settings sections
 const tabs = [
   { id: 'profile', label: 'Profile', icon: User },
   { id: 'twilio', label: 'Twilio', icon: Phone },
@@ -63,6 +63,7 @@ export default function Settings() {
   );
 }
 
+// Profile sub-component — update name, email, company, and phone
 function ProfileSettings() {
   const { user, updateUser } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -128,6 +129,7 @@ function ProfileSettings() {
   );
 }
 
+// Twilio sub-component — configure and test SMS provider credentials
 function TwilioSettings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -355,6 +357,7 @@ function TwilioSettings() {
   );
 }
 
+// Security sub-component — change account password with validation
 function SecuritySettings() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({

@@ -1,3 +1,4 @@
+// Analytics page — performance reports with charts for messages, campaigns, and hourly activity
 import { useEffect, useState } from 'react';
 import {
   MessageSquare,
@@ -33,32 +34,19 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../co
 import Button from '../components/ui/Button';
 import { Select } from '../components/ui/Input';
 
-const hourlyData = [
-  { hour: '00:00', messages: 5 },
-  { hour: '02:00', messages: 3 },
-  { hour: '04:00', messages: 2 },
-  { hour: '06:00', messages: 6 },
-  { hour: '08:00', messages: 14 },
-  { hour: '10:00', messages: 22 },
-  { hour: '12:00', messages: 26 },
-  { hour: '14:00', messages: 20 },
-  { hour: '16:00', messages: 18 },
-  { hour: '18:00', messages: 16 },
-  { hour: '20:00', messages: 10 },
-  { hour: '22:00', messages: 7 },
-];
-
 export default function Analytics() {
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState('30');
   const [stats, setStats] = useState(null);
   const [dailyData, setDailyData] = useState([]);
   const [campaignStats, setCampaignStats] = useState([]);
+  const [hourlyData, setHourlyData] = useState([]);
 
   useEffect(() => {
     fetchAnalytics();
   }, [dateRange]);
 
+  // Fetch all analytics data in parallel based on the selected date range
   const fetchAnalytics = async () => {
     setLoading(true);
 
@@ -66,22 +54,25 @@ export default function Analytics() {
       const startDate = format(subDays(new Date(), parseInt(dateRange, 10)), 'yyyy-MM-dd');
       const endDate = format(new Date(), 'yyyy-MM-dd');
 
-      const [dashboardResponse, dailyResponse, campaignsResponse] = await Promise.all([
+      const [dashboardResponse, dailyResponse, campaignsResponse, hourlyResponse] = await Promise.all([
         analyticsAPI.getDashboard(),
         analyticsAPI.getDaily({ start_date: startDate, end_date: endDate }),
         analyticsAPI.getCampaignStats({ start_date: startDate, end_date: endDate }),
+        analyticsAPI.getHourly(),
       ]);
 
       setStats(dashboardResponse.data);
       setDailyData(dailyResponse.data.daily || []);
       setCampaignStats(campaignsResponse.data.campaigns || []);
-    } catch (error) {
-      console.error('Failed to fetch analytics:', error);
+      setHourlyData(hourlyResponse.data.hourly || []);
+    } catch {
+      // Analytics fetch failed — charts will show empty state
     } finally {
       setLoading(false);
     }
   };
 
+  // Transform raw API data into chart-ready formats
   const chartData = dailyData.map((day) => ({
     date: format(new Date(day.date), 'MMM d'),
     sent: day.sent || 0,
@@ -106,6 +97,7 @@ export default function Analytics() {
     }))
     .slice(0, 5);
 
+  // Compute quick insight metrics from the data
   const bestDay = dailyData.reduce((current, day) => {
     if (!current || (day.delivered || 0) > (current.delivered || 0)) {
       return day;

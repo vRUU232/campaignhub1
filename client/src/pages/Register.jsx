@@ -1,3 +1,4 @@
+// Register page — creates a new user account and redirects to dashboard
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, Building2, Zap, ArrowRight } from 'lucide-react';
@@ -7,6 +8,7 @@ import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 
 export default function Register() {
+  // Registration form fields
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -22,6 +24,7 @@ export default function Register() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Validate passwords and submit registration to the API
   const handleSubmit = async (e) => {
     e.preventDefault();
 
