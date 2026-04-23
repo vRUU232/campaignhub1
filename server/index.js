@@ -19,6 +19,8 @@ const settingsRoutes = require('./routes/settings');
 const analyticsRoutes = require('./routes/analytics');
 const webhookRoutes = require('./routes/webhooks');
 
+const { startScheduler } = require('./services/campaignScheduler');
+
 const app = express();
 
 // CORS configuration
@@ -135,6 +137,9 @@ app.listen(PORT, () => {
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`Health check: http://localhost:${PORT}/api/health`);
   console.log('='.repeat(50));
+
+  // Start the background scheduler for scheduled campaigns
+  startScheduler();
 });
 
 module.exports = app;

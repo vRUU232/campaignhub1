@@ -61,7 +61,7 @@ The client proxies `/api` requests to `http://localhost:5001`.
 ### Authentication
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - Login user
-- `GET /api/auth/me` - Get current user (Protected)
+- `GET /api/auth/profile` - Get current user (Protected)
 
 ### Contacts
 - `GET /api/contacts` - Get all contacts

@@ -62,11 +62,11 @@ export const campaignsAPI = {
   update: (id, data) => api.put(`/campaigns/${id}`, data),
   delete: (id) => api.delete(`/campaigns/${id}`),
   send: (id) => api.post(`/campaigns/${id}/send`),
-  schedule: (id, scheduledAt) => api.post(`/campaigns/${id}/schedule`, { scheduled_at: scheduledAt }),
+  schedule: (id, scheduledAt) => api.post(`/campaigns/${id}/schedule`, { scheduledAt }),
   cancel: (id) => api.post(`/campaigns/${id}/cancel`),
   duplicate: (id) => api.post(`/campaigns/${id}/duplicate`),
-  addContacts: (id, contactIds) => api.post(`/campaigns/${id}/contacts`, { contact_ids: contactIds }),
-  removeContacts: (id, contactIds) => api.delete(`/campaigns/${id}/contacts`, { data: { contact_ids: contactIds } }),
+  addContacts: (id, contactIds) => api.post(`/campaigns/${id}/contacts`, { contactIds }),
+  removeContacts: (id, contactIds) => api.delete(`/campaigns/${id}/contacts`, { data: { contactIds } }),
   getStats: (id) => api.get(`/campaigns/${id}/stats`),
 };
 

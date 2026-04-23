@@ -49,7 +49,7 @@ export default function CampaignForm() {
 
       if (isEdit) {
         const campaignResponse = await campaignsAPI.getById(id);
-        const campaign = campaignResponse.data.campaign;
+        const campaign = campaignResponse.data;
 
         setFormData({
           name: campaign.name,
@@ -91,10 +91,10 @@ export default function CampaignForm() {
 
       if (isEdit) {
         const response = await campaignsAPI.update(id, { ...formData, status });
-        campaign = response.data.campaign;
+        campaign = response.data;
       } else {
         const response = await campaignsAPI.create({ ...formData, status });
-        campaign = response.data.campaign;
+        campaign = response.data;
       }
 
       if (selectedContacts.length > 0) {
@@ -123,10 +123,10 @@ export default function CampaignForm() {
 
       if (isEdit) {
         const response = await campaignsAPI.update(id, formData);
-        campaign = response.data.campaign;
+        campaign = response.data;
       } else {
         const response = await campaignsAPI.create(formData);
-        campaign = response.data.campaign;
+        campaign = response.data;
       }
 
       await campaignsAPI.addContacts(campaign.id, selectedContacts);
@@ -158,10 +158,10 @@ export default function CampaignForm() {
 
       if (isEdit) {
         const response = await campaignsAPI.update(id, formData);
-        campaign = response.data.campaign;
+        campaign = response.data;
       } else {
         const response = await campaignsAPI.create(formData);
-        campaign = response.data.campaign;
+        campaign = response.data;
       }
 
       await campaignsAPI.addContacts(campaign.id, selectedContacts);

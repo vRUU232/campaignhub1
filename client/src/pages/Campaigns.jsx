@@ -79,10 +79,10 @@ export default function Campaigns() {
 
   const handleDuplicate = async (campaign) => {
     try {
-      const response = await campaignsAPI.duplicate(campaign.id);
-      setCampaigns([response.data.campaign, ...campaigns]);
+      await campaignsAPI.duplicate(campaign.id);
       toast.success('Campaign duplicated');
       setActionMenu(null);
+      fetchCampaigns();
     } catch {
       toast.error('Failed to duplicate campaign');
     }
@@ -268,11 +268,13 @@ export default function Campaigns() {
                   <TableCell>
                     <StatusBadge status={campaign.status} />
                   </TableCell>
-                  <TableCell>{campaign.recipient_count || 0}</TableCell>
-                  <TableCell>{campaign.sent_count || 0}</TableCell>
-                  <TableCell>{campaign.delivered_count || 0}</TableCell>
+                  <TableCell>{campaign.totalRecipients || 0}</TableCell>
+                  <TableCell>{campaign.messagesSent || 0}</TableCell>
+                  <TableCell>{campaign.messagesDelivered || 0}</TableCell>
                   <TableCell className="text-[#6f677b]">
-                    {format(new Date(campaign.created_at), 'MMM d, yyyy')}
+                    {campaign.createdAt
+                      ? format(new Date(campaign.createdAt), 'MMM d, yyyy')
+                      : '—'}
                   </TableCell>
                   <TableCell>
                     <div className="relative flex justify-end">

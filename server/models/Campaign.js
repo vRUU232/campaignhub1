@@ -314,6 +314,7 @@ const Campaign = {
   formatResponse(campaign) {
     return {
       id: campaign.id,
+      userId: campaign.user_id,
       name: campaign.name,
       message: campaign.message,
       status: campaign.status,

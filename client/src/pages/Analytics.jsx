@@ -89,10 +89,10 @@ export default function Analytics() {
   const campaignPerformance = campaignStats
     .map((campaign) => ({
       name: campaign.name?.substring(0, 18) || 'Unknown',
-      sent: campaign.sent_count || 0,
-      delivered: campaign.delivered_count || 0,
-      rate: campaign.sent_count
-        ? Math.round((campaign.delivered_count / campaign.sent_count) * 100)
+      sent: campaign.messagesSent || 0,
+      delivered: campaign.messagesDelivered || 0,
+      rate: campaign.messagesSent
+        ? Math.round((campaign.messagesDelivered / campaign.messagesSent) * 100)
         : 0,
     }))
     .slice(0, 5);

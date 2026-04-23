@@ -57,7 +57,8 @@ export default function CampaignDetail() {
   const fetchCampaign = async () => {
     try {
       const campaignRes = await campaignsAPI.getById(id);
-      setCampaign(campaignRes.data.campaign);
+      // API returns the campaign object directly at the top level
+      setCampaign(campaignRes.data);
     } catch {
       toast.error('Failed to load campaign');
       navigate('/campaigns');
@@ -131,13 +132,13 @@ export default function CampaignDetail() {
   }
 
   const pieData = [
-    { name: 'Delivered', value: campaign.delivered_count || 0, color: '#7aa998' },
-    { name: 'Failed', value: campaign.failed_count || 0, color: '#e74c3c' },
-    { name: 'Pending', value: (campaign.sent_count || 0) - (campaign.delivered_count || 0) - (campaign.failed_count || 0), color: '#f3a76a' },
+    { name: 'Delivered', value: campaign.messagesDelivered || 0, color: '#7aa998' },
+    { name: 'Failed', value: campaign.messagesFailed || 0, color: '#e74c3c' },
+    { name: 'Pending', value: (campaign.messagesSent || 0) - (campaign.messagesDelivered || 0) - (campaign.messagesFailed || 0), color: '#f3a76a' },
   ].filter((d) => d.value > 0);
 
-  const deliveryRate = campaign.sent_count
-    ? Math.round((campaign.delivered_count / campaign.sent_count) * 100)
+  const deliveryRate = campaign.messagesSent
+    ? Math.round((campaign.messagesDelivered / campaign.messagesSent) * 100)
     : 0;
 
   return (
@@ -159,7 +160,7 @@ export default function CampaignDetail() {
               <StatusBadge status={campaign.status} />
             </div>
             <p className="text-[#6f677b]">
-              Created on {format(new Date(campaign.created_at), 'MMMM d, yyyy')}
+              Created on {campaign.createdAt ? format(new Date(campaign.createdAt), 'MMMM d, yyyy') : '—'}
             </p>
           </div>
         </div>
@@ -200,7 +201,7 @@ export default function CampaignDetail() {
             <div>
               <p className="text-sm text-[#6f677b]">Recipients</p>
               <p className="font-['Outfit'] text-2xl font-bold text-[#1f172f]">
-                {campaign.recipient_count || 0}
+                {campaign.totalRecipients || 0}
               </p>
             </div>
           </div>
@@ -214,7 +215,7 @@ export default function CampaignDetail() {
             <div>
               <p className="text-sm text-[#6f677b]">Sent</p>
               <p className="font-['Outfit'] text-2xl font-bold text-[#1f172f]">
-                {campaign.sent_count || 0}
+                {campaign.messagesSent || 0}
               </p>
             </div>
           </div>
@@ -228,7 +229,7 @@ export default function CampaignDetail() {
             <div>
               <p className="text-sm text-[#6f677b]">Delivered</p>
               <p className="font-['Outfit'] text-2xl font-bold text-[#1f172f]">
-                {campaign.delivered_count || 0}
+                {campaign.messagesDelivered || 0}
               </p>
             </div>
           </div>
@@ -259,11 +260,11 @@ export default function CampaignDetail() {
             <div className="bg-[#f6f0e8] rounded-xl p-6">
               <p className="text-[#1f172f] whitespace-pre-wrap">{campaign.message}</p>
             </div>
-            {campaign.scheduled_at && (
+            {campaign.scheduledAt && (
               <div className="mt-4 flex items-center gap-2 text-[#6f677b]">
                 <Calendar className="w-4 h-4" />
                 <span>
-                  Scheduled for {format(new Date(campaign.scheduled_at), 'MMMM d, yyyy h:mm a')}
+                  Scheduled for {format(new Date(campaign.scheduledAt), 'MMMM d, yyyy h:mm a')}
                 </span>
               </div>
             )}
@@ -335,7 +336,7 @@ export default function CampaignDetail() {
                   <TableHead>Phone</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Sent At</TableHead>
-                  <TableHead>Delivered At</TableHead>
+                  <TableHead>Added At</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -344,16 +345,16 @@ export default function CampaignDetail() {
                     <TableCell className="font-medium">{contact.name}</TableCell>
                     <TableCell className="text-[#6f677b]">{contact.phone}</TableCell>
                     <TableCell>
-                      <StatusBadge status={contact.message_status || 'pending'} />
+                      <StatusBadge status={contact.campaignStatus || 'pending'} />
                     </TableCell>
                     <TableCell className="text-[#6f677b]">
-                      {contact.sent_at
-                        ? format(new Date(contact.sent_at), 'MMM d, h:mm a')
+                      {contact.sentAt
+                        ? format(new Date(contact.sentAt), 'MMM d, h:mm a')
                         : '-'}
                     </TableCell>
                     <TableCell className="text-[#6f677b]">
-                      {contact.delivered_at
-                        ? format(new Date(contact.delivered_at), 'MMM d, h:mm a')
+                      {contact.addedAt
+                        ? format(new Date(contact.addedAt), 'MMM d, h:mm a')
                         : '-'}
                     </TableCell>
                   </TableRow>
