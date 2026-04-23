@@ -21,22 +21,13 @@ const settingsController = {
         });
       }
 
-      // Return safe response (masked credentials) with both camelCase and snake_case
-      const maskedSid = settings.accountSid ? `${settings.accountSid.substring(0, 8)}...` : null;
+      // Return settings — Account SID is not secret (Twilio shows it openly),
+      // only Auth Token is omitted for security
       res.json({
         configured: true,
         settings: {
           id: settings.id,
-          // camelCase
-          accountSid: maskedSid,
-          phoneNumber: settings.phoneNumber,
-          messagingServiceSid: settings.messagingServiceSid,
-          isVerified: settings.isVerified,
-          monthlyLimit: settings.monthlyLimit,
-          createdAt: settings.createdAt,
-          updatedAt: settings.updatedAt,
-          // snake_case aliases for frontend compatibility
-          account_sid: maskedSid,
+          account_sid: settings.accountSid,
           phone_number: settings.phoneNumber,
           messaging_service_sid: settings.messagingServiceSid,
           is_verified: settings.isVerified,
@@ -58,19 +49,28 @@ const settingsController = {
     try {
       // Support both camelCase and snake_case field names
       const accountSid = req.body.accountSid || req.body.account_sid;
-      const authToken = req.body.authToken || req.body.auth_token;
+      let authToken = req.body.authToken || req.body.auth_token;
       const phoneNumber = req.body.phoneNumber || req.body.phone_number;
       const messagingServiceSid = req.body.messagingServiceSid || req.body.messaging_service_sid;
 
-      // Validate required fields
-      if (!accountSid || !authToken || !phoneNumber) {
+      if (!accountSid || !phoneNumber) {
         return res.status(400).json({
-          error: 'Account SID, Auth Token, and Phone Number are required'
+          error: 'Account SID and Phone Number are required'
         });
       }
 
-      // Verify credentials with Twilio
-      const verification = await twilioService.verifyCredentials(accountSid, authToken);
+      // If auth token is empty, keep the existing one (user didn't change it)
+      const existing = await TwilioSettings.findByUserId(req.user.id);
+      if (!authToken && existing) {
+        authToken = existing.authToken;
+      } else if (!authToken && !existing) {
+        return res.status(400).json({
+          error: 'Auth Token is required for initial setup'
+        });
+      }
+
+      // Verify credentials and phone number with Twilio
+      const verification = await twilioService.verifyCredentials(accountSid, authToken, phoneNumber);
 
       if (!verification.valid) {
         return res.status(400).json({
@@ -100,8 +100,7 @@ const settingsController = {
           accountSid: `${accountSid.substring(0, 8)}...`,
           phoneNumber: settings.phoneNumber,
           messagingServiceSid: settings.messagingServiceSid,
-          isVerified: true,
-          accountName: verification.accountName
+          isVerified: true
         }
       });
     } catch (error) {
@@ -111,44 +110,48 @@ const settingsController = {
   },
 
   /**
-   * Test Twilio connection by sending a test SMS
+   * Test Twilio connection by verifying credentials against the Twilio API
    */
   async testTwilioConnection(req, res) {
     try {
-      const { testPhoneNumber } = req.body;
+      // Use credentials from the form (what user typed), fall back to DB for unchanged fields
+      const accountSid = req.body.account_sid || req.body.accountSid;
+      let authToken = req.body.auth_token || req.body.authToken;
+      const phoneNumber = req.body.phone_number || req.body.phoneNumber;
 
-      if (!testPhoneNumber) {
-        return res.status(400).json({ error: 'Test phone number is required' });
+      const existing = await TwilioSettings.findByUserId(req.user.id);
+
+      // If no account SID provided in body, use saved settings
+      if (!accountSid && !existing) {
+        return res.status(400).json({ error: 'Twilio settings not configured. Please enter your credentials.' });
       }
 
-      const settings = await TwilioSettings.findByUserId(req.user.id);
+      const sid = accountSid || existing.accountSid;
+      const phone = phoneNumber || (existing && existing.phoneNumber);
 
-      if (!settings) {
-        return res.status(400).json({ error: 'Twilio settings not configured' });
+      // If auth token is empty, use existing from DB
+      if (!authToken && existing) {
+        authToken = existing.authToken;
       }
 
-      const result = await twilioService.sendSMS(
-        req.user.id,
-        testPhoneNumber,
-        'This is a test message from CampaignHub. Your Twilio integration is working!'
-      );
-
-      if (result.success) {
-        res.json({
-          success: true,
-          message: 'Test message sent successfully',
-          messageSid: result.sid
-        });
-      } else {
-        res.status(400).json({
-          success: false,
-          error: result.error,
-          code: result.code
-        });
+      if (!sid || !authToken) {
+        return res.status(400).json({ error: 'Account SID and Auth Token are required' });
       }
+
+      // Verify credentials AND phone number ownership
+      const verification = await twilioService.verifyCredentials(sid, authToken, phone);
+
+      if (!verification.valid) {
+        return res.status(400).json({ success: false, error: verification.error });
+      }
+
+      res.json({
+        success: true,
+        message: 'Twilio credentials are valid',
+      });
     } catch (error) {
       console.error('Test Twilio connection error:', error);
-      res.status(500).json({ error: 'Failed to send test message' });
+      res.status(500).json({ error: 'Failed to verify Twilio credentials' });
     }
   },
 

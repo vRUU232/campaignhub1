@@ -169,25 +169,40 @@ class TwilioService {
   }
 
   /**
-   * Verify Twilio credentials
+   * Verify Twilio credentials and optionally validate the phone number belongs to the account
    */
-  async verifyCredentials(accountSid, authToken) {
+  async verifyCredentials(accountSid, authToken, phoneNumber) {
     try {
       const twilio = require('twilio');
       const client = twilio(accountSid, authToken);
 
-      // Try to fetch account info to verify credentials
-      const account = await client.api.accounts(accountSid).fetch();
+      // Fetch all incoming phone numbers to verify credentials + phone ownership
+      const numbers = await client.incomingPhoneNumbers.list();
 
-      return {
-        valid: true,
-        accountName: account.friendlyName,
-        status: account.status
-      };
+      if (!numbers || numbers.length === 0) {
+        return { valid: false, error: 'No phone numbers found on this Twilio account' };
+      }
+
+      // If a phone number was provided, check it belongs to the account
+      if (phoneNumber) {
+        const formatted = this.formatPhoneNumber(phoneNumber);
+        const match = numbers.find(n => n.phoneNumber === formatted);
+        if (!match) {
+          const available = numbers.map(n => n.phoneNumber).join(', ');
+          return {
+            valid: false,
+            error: `Phone number ${formatted} is not found on this Twilio account. Available numbers: ${available}`
+          };
+        }
+      }
+
+      return { valid: true };
     } catch (error) {
       return {
         valid: false,
-        error: error.message
+        error: error.status === 401
+          ? 'Invalid Account SID or Auth Token'
+          : error.message
       };
     }
   }

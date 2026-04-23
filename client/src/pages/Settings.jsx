@@ -173,8 +173,10 @@ function TwilioSettings() {
 
     try {
       await settingsAPI.updateTwilio(formData);
-      toast.success('Twilio settings saved');
-      setStatus('not_verified');
+      toast.success('Twilio settings saved and verified!');
+      setStatus('verified');
+      // Clear auth token field after save (keep existing token hint)
+      setFormData((prev) => ({ ...prev, auth_token: '' }));
     } catch (error) {
       toast.error(error.response?.data?.error || 'Failed to save settings');
     } finally {
@@ -186,7 +188,7 @@ function TwilioSettings() {
     setTesting(true);
 
     try {
-      await settingsAPI.testTwilio();
+      await settingsAPI.testTwilio(formData);
       toast.success('Twilio connection verified!');
       setStatus('verified');
     } catch (error) {

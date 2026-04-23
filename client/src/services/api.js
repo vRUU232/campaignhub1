@@ -114,7 +114,7 @@ export const analyticsAPI = {
 export const settingsAPI = {
   getTwilio: () => api.get('/settings/twilio'),
   updateTwilio: (data) => api.put('/settings/twilio', data),
-  testTwilio: () => api.post('/settings/twilio/test'),
+  testTwilio: (data) => api.post('/settings/twilio/test', data),
 };
 
 export default api;
